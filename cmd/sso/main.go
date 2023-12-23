@@ -1,4 +1,4 @@
-package sso
+package main
 
 func main() {
 
