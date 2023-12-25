@@ -7,6 +7,12 @@ import (
 	"sso/internal/config"
 )
 
+const (
+	envLocal = "local"
+	envProd  = "prod"
+	envDev   = "dev"
+)
+
 func main() {
 	cfg := config.MustLoad()
 
@@ -40,15 +46,15 @@ func setupLogger(env string) *slog.Logger {
 	var log *slog.Logger
 
 	switch env {
-	case "local":
+	case envLocal:
 		log = slog.New(
 			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
 		)
-	case "dev":
+	case envDev:
 		log = slog.New(
 			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
 		)
-	case "prod":
+	case envProd:
 		log = slog.New(
 			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}),
 		)
