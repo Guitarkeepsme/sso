@@ -21,18 +21,7 @@ func main() {
 
 	log := setupLogger(cfg.Env)
 
-	log.Info("Starting application",
-		slog.String("env", cfg.Env),
-		slog.String("storage_path", cfg.StoragePath),
-		slog.String("token_ttl", cfg.TokenTTL.String()),
-		slog.Int("port", cfg.GRPC.Port),
-		slog.String("timeout", cfg.GRPC.Timeout.String()))
-
-	log.Debug("debug message")
-
-	log.Error("error message")
-
-	log.Warn("warning message")
+	log.Info("Starting application", slog.Any("config", cfg))
 
 	// ToDo: инициализировать объект конфигурации
 
