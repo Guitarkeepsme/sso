@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"sso/internal/app"
 	"sso/internal/config"
+	"sso/internal/lib/logger/handlers/slogpretty"
 )
 
 const (
@@ -20,18 +22,11 @@ func main() {
 
 	log := setupLogger(cfg.Env)
 
-	log.Info("Starting application",
-		slog.String("env", cfg.Env),
-		slog.String("storage_path", cfg.StoragePath),
-		slog.String("token_ttl", cfg.TokenTTL.String()),
-		slog.Int("port", cfg.GRPC.Port),
-		slog.String("timeout", cfg.GRPC.Timeout.String()))
+	log.Info("Starting application", slog.Any("config", cfg))
 
-	log.Debug("debug message")
+	application := app.New(log, cfg.GRPC.Port, cfg.StoragePath, cfg.TokenTTL)
 
-	log.Error("error message")
-
-	log.Warn("warning message")
+	application.GRPCSrv.MustRun()
 
 	// ToDo: инициализировать объект конфигурации
 
@@ -47,9 +42,7 @@ func setupLogger(env string) *slog.Logger {
 
 	switch env {
 	case envLocal:
-		log = slog.New(
-			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
-		)
+		log = setupPrettySlog()
 	case envDev:
 		log = slog.New(
 			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
@@ -61,4 +54,16 @@ func setupLogger(env string) *slog.Logger {
 
 	}
 	return log
+}
+
+func setupPrettySlog() *slog.Logger {
+	opts := slogpretty.PrettyHandlerOptions{
+		SlogOpts: &slog.HandlerOptions{
+			Level: slog.LevelDebug,
+		},
+	}
+
+	handler := opts.NewPrettyHandler(os.Stdout)
+
+	return slog.New(handler)
 }
