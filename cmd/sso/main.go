@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log/slog"
 	"os"
 	"sso/internal/app"
@@ -17,8 +16,6 @@ const (
 
 func main() {
 	cfg := config.MustLoad()
-
-	fmt.Println(cfg)
 
 	log := setupLogger(cfg.Env)
 
