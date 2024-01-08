@@ -50,6 +50,10 @@ func (a *App) Run() error {
 
 	log.Info("grpc server is running", slog.String("addr", l.Addr().String()))
 
+	if err := a.gRPCServer.Serve(l); err != nil {
+		return fmt.Errorf("%s, %w", op, err)
+	}
+
 	return nil
 }
 
