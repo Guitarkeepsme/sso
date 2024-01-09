@@ -7,7 +7,7 @@ require (
 	google.golang.org/grpc v1.60.1
 )
 
-require golang.org/x/crypto v0.18.0 // indirect
+require golang.org/x/crypto v0.18.0
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
