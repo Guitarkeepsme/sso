@@ -9,6 +9,8 @@ require (
 
 require golang.org/x/crypto v0.18.0
 
+require github.com/golang-jwt/jwt/v5 v5.2.0 // indirect
+
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/Guitarkeepsme/protos v0.0.3
