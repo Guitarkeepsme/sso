@@ -2,10 +2,13 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"sso/internal/domain/models"
 	"sso/internal/lib/logger/sl"
+	"sso/internal/storage"
+
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -63,7 +66,41 @@ func (a *Auth) Login(
 	password string,
 	appID int,
 ) (string, error) {
-	panic("not implemented")
+	const op = "Auth.Login"
+
+	log := a.log.With(
+		slog.String("op", op),
+		slog.String("username", email),
+	)
+
+	log.Info("attempting to login a user")
+
+	user, err := a.usrProvider.User(ctx, email)
+	if err != nil {
+		if errors.Is(err, storage.ErrUserNotFound) {
+			a.log.Warn("user not found", sl.Err(err))
+
+			return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
+		}
+
+		a.log.Error("failed to get user", sl.Err(err))
+
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+
+	if err := bcrypt.CompareHashAndPassword(user.PassHash, []byte(password)); err != nil {
+		a.log.Info("invalid credentials", sl.Err(err))
+
+		return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
+	}
+	app, err := a.appProvider.App(ctx, appID)
+	if err != nil {
+		return "", fmt.Errorf("%s: %w", op, err)
+	}
+
+	log.Info("user logged in successfully")
+
+	return "", nil
 }
 
 // RegisterNewUser registers new user in the system and returns user ID.
