@@ -26,6 +26,7 @@ type Auth struct {
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 	ErrUserExists         = errors.New("user already exists")
+	ErrInvalidAppID       = errors.New("invalid app ID")
 )
 
 type UserSaver interface {
