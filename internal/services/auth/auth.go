@@ -25,6 +25,7 @@ type Auth struct {
 
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
+	ErrInvalidAppID       = errors.New("invalid app id")
 )
 
 type UserSaver interface {
@@ -118,7 +119,7 @@ func (a *Auth) Login(
 // RegisterNewUser registers new user in the system and returns user ID.
 // If user with given Username already exists, returns error.
 func (a *Auth) RegisterNewUser(ctx context.Context, email string, pass string) (int64, error) {
-	const op = "auth.RegisterNewUser"
+	const op = "Auth.RegisterNewUser"
 
 	log := a.log.With(
 		slog.String("op", op),
@@ -147,6 +148,27 @@ func (a *Auth) RegisterNewUser(ctx context.Context, email string, pass string) (
 }
 
 // IsAdmin checks if user is admin.
-func (a *Auth) IsAdmin(ct context.Context, userID int64) (bool, error) {
-	panic("not implemented")
+func (a *Auth) IsAdmin(ctx context.Context, userID int64) (bool, error) {
+	const op = "Auth.IsAdmin"
+
+	log := a.log.With(
+		slog.String("op", op),
+		slog.Int64("user_id", userID),
+	)
+
+	log.Info("checking if the user is admin")
+
+	isAdmin, err := a.usrProvider.IsAdmin(ctx, userID)
+	if err != nil {
+		if errors.Is(err, storage.ErrAppNotFound) {
+			log.Warn("user not found", sl.Err(err))
+
+			return false, fmt.Errorf("%s: %w", op, ErrInvalidAppID)
+		}
+		log.Error("failed to check if the user is admin", op, err)
+		return false, fmt.Errorf("%s: %w", op, err)
+	}
+
+	log.Info("checked if the user is admin", slog.Bool("is_admin", isAdmin))
+	return isAdmin, nil
 }
