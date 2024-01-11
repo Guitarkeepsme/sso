@@ -14,7 +14,7 @@ require github.com/golang-jwt/jwt/v5 v5.2.0
 require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
-	github.com/mattn/go-sqlite3 v1.14.16 // indirect
+	github.com/mattn/go-sqlite3 v1.14.19 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 )
 
