@@ -46,7 +46,7 @@ func fetchConfigPath() string {
 	flag.Parse()
 
 	if res == "" {
-		res = "config.yaml"
+		res = os.Getenv("CONFIG_PATH")
 	}
 
 	return res
