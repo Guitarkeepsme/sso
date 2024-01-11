@@ -33,7 +33,7 @@ type serverAPI struct {
 	auth Auth
 }
 
-func Register(gRPC *grpc.Server) {
+func Register(gRPC *grpc.Server, auth Auth) {
 	ssov1.RegisterAuthServer(gRPC, &serverAPI{})
 }
 
