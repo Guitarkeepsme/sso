@@ -27,14 +27,6 @@ func main() {
 
 	go application.GRPCSrv.MustRun()
 
-	// ToDo: инициализировать объект конфигурации
-
-	// ToDo: инициализировать логгер
-
-	// ToDo: запустить приложение
-
-	// ToDo: запустить сервер
-
 	stop := make(chan os.Signal, 1)
 
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
