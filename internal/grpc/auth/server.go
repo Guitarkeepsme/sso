@@ -34,7 +34,7 @@ type serverAPI struct {
 }
 
 func Register(gRPC *grpc.Server, auth Auth) {
-	ssov1.RegisterAuthServer(gRPC, &serverAPI{})
+	ssov1.RegisterAuthServer(gRPC, &serverAPI{auth: auth})
 }
 
 const (
@@ -74,9 +74,7 @@ func (s *serverAPI) Register(ctx context.Context,
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	return &ssov1.RegisterResponse{
-		UserId: userID,
-	}, nil
+	return &ssov1.RegisterResponse{UserId: userID}, nil
 }
 
 func (s *serverAPI) IsAdmin(ctx context.Context,
@@ -94,9 +92,7 @@ func (s *serverAPI) IsAdmin(ctx context.Context,
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 
-	return &ssov1.IsAdminResponse{
-		IsAdmin: isAdmin,
-	}, nil
+	return &ssov1.IsAdminResponse{IsAdmin: isAdmin}, nil
 }
 
 func validateLogin(req *ssov1.LoginRequest) error {

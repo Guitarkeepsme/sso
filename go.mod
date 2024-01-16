@@ -10,6 +10,7 @@ require (
 require golang.org/x/crypto v0.18.0
 
 require (
+	github.com/Guitarkeepsme/protos v0.0.3
 	github.com/brianvoe/gofakeit/v6 v6.26.4
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/mattn/go-sqlite3 v1.14.19
@@ -26,7 +27,6 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
-	github.com/Guitarkeepsme/protos v0.0.3
 	github.com/fatih/color v1.16.0
 	github.com/golang-migrate/migrate/v4 v4.17.0
 	github.com/golang/protobuf v1.5.3 // indirect
