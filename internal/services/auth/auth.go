@@ -100,6 +100,7 @@ func (a *Auth) Login(
 
 		return "", fmt.Errorf("%s: %w", op, ErrInvalidCredentials)
 	}
+
 	app, err := a.appProvider.App(ctx, appID)
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)

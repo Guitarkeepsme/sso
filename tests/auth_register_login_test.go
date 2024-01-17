@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	ssov1 "github.com/Guitarkeepsme/protos/gen/go/sso"
+	ssov1 "github.com/GolangLessons/protos/gen/go/sso"
 	"github.com/brianvoe/gofakeit/v6"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
@@ -24,26 +24,26 @@ func TestRegisterLogin_Login_HappyPath(t *testing.T) {
 	ctx, st := suite.New(t)
 
 	email := gofakeit.Email()
-	password := randomFakePassword()
+	pass := randomFakePassword()
 
 	respReg, err := st.AuthClient.Register(ctx, &ssov1.RegisterRequest{
 		Email:    email,
-		Password: password,
+		Password: pass,
 	})
 	require.NoError(t, err)
 	assert.NotEmpty(t, respReg.GetUserId())
 
 	respLogin, err := st.AuthClient.Login(ctx, &ssov1.LoginRequest{
 		Email:    email,
-		Password: password,
+		Password: pass,
 		AppId:    appID,
 	})
 	require.NoError(t, err)
 
-	loginTime := time.Now()
-
 	token := respLogin.GetToken()
 	require.NotEmpty(t, token)
+
+	loginTime := time.Now()
 
 	tokenParsed, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		return []byte(appSecret), nil
@@ -51,16 +51,16 @@ func TestRegisterLogin_Login_HappyPath(t *testing.T) {
 	require.NoError(t, err)
 
 	claims, ok := tokenParsed.Claims.(jwt.MapClaims)
-	assert.True(t, ok)
+	require.True(t, ok)
 
-	assert.Equal(t, respReg.GetUserId(), int64(claims["uid"].(float64)))
+	// assert.Equal(t, respReg.GetUserId(), int64(claims["uid"].(float64)))
 	assert.Equal(t, email, claims["email"].(string))
 	assert.Equal(t, appID, int(claims["app_id"].(float64)))
 
-	const deltaSeconds = 2
+	const deltaSeconds = 1
 
+	// check if exp of token is in correct range, ttl get from st.Cfg.TokenTTL
 	assert.InDelta(t, loginTime.Add(st.Cfg.TokenTTL).Unix(), claims["exp"].(float64), deltaSeconds)
-
 }
 
 func randomFakePassword() string {

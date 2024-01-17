@@ -24,7 +24,6 @@ func New(
 	}
 
 	authService := auth.New(log, storage, storage, storage, tokenTTL)
-	// TODO: инициализировать аус (авторизацию)
 
 	grpcApp := grpcapp.New(log, authService, grpcPort)
 

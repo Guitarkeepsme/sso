@@ -24,13 +24,17 @@ func New(storagePath string) (*Storage, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	return &Storage{db}, nil
+	return &Storage{db: db}, nil
+}
+
+func (s *Storage) Stop() error {
+	return s.db.Close()
 }
 
 func (s *Storage) SaveUser(ctx context.Context, email string, passHash []byte) (int64, error) {
 	const op = "storage.sqlite.SaveUser"
 
-	stmt, err := s.db.Prepare("INSERT INTO users(email, pass_hash) VALUES (?, ?)")
+	stmt, err := s.db.Prepare("INSERT INTO users(email, pass_hash) VALUES(?, ?)")
 	if err != nil {
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}
@@ -56,7 +60,7 @@ func (s *Storage) SaveUser(ctx context.Context, email string, passHash []byte) (
 
 // User returns the user by its email address
 func (s *Storage) User(ctx context.Context, email string) (models.User, error) {
-	const op = "storage.user.User"
+	const op = "storage.sqlite.User"
 
 	stmt, err := s.db.Prepare("SELECT id, email, pass_hash FROM users WHERE email = ?")
 	if err != nil {
@@ -78,8 +82,32 @@ func (s *Storage) User(ctx context.Context, email string) (models.User, error) {
 	return user, nil
 }
 
+func (s *Storage) App(ctx context.Context, id int) (models.App, error) {
+	const op = "storage.sqlite.app"
+
+	stmt, err := s.db.Prepare("SELECT id, name, secret FROM apps WHERE id = ?")
+	if err != nil {
+		return models.App{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	row := stmt.QueryRowContext(ctx, id)
+
+	var app models.App
+	err = row.Scan(&app.ID, &app.Name, &app.Secret)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return models.App{}, fmt.Errorf("%s: %w", op, storage.ErrAppNotFound)
+		}
+
+		return models.App{}, fmt.Errorf("%s: %w", op, err)
+	}
+
+	return app, nil
+
+}
+
 func (s *Storage) IsAdmin(ctx context.Context, userID int64) (bool, error) {
-	const op = "storage.user.IsAdmin"
+	const op = "storage.sqlite.IsAdmin"
 
 	stmt, err := s.db.Prepare("SELECT is_admin FROM users WHERE d = ?")
 	if err != nil {
@@ -100,28 +128,4 @@ func (s *Storage) IsAdmin(ctx context.Context, userID int64) (bool, error) {
 	}
 
 	return isAdmin, nil
-}
-
-func (s *Storage) App(ctx context.Context, id int) (models.App, error) {
-	const op = "storage.sqlite.app"
-
-	stmt, err := s.db.Prepare("SELECT id, name, secret FROM users WHERE id = ?")
-	if err != nil {
-		return models.App{}, fmt.Errorf("%s: %w", op, err)
-	}
-
-	row := stmt.QueryRowContext(ctx, id)
-
-	var app models.App
-	err = row.Scan(&app.ID, &app.Name, &app.Secret)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return models.App{}, fmt.Errorf("%s: %w", op, storage.ErrAppNotFound)
-		}
-
-		return models.App{}, fmt.Errorf("%s: %w", op, err)
-	}
-
-	return app, nil
-
 }
