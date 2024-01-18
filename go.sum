@@ -1,7 +1,5 @@
 github.com/BurntSushi/toml v1.2.1 h1:9F2/+DoOYIOksmaJFPw1tGFy1eDnIJXg+UHjuD8lTak=
 github.com/BurntSushi/toml v1.2.1/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
-github.com/GolangLessons/protos v0.1.2 h1:HeS3FJuuHEAV3qbokfx7e/dkNg27SwNB7ooo+BIb1Bs=
-github.com/GolangLessons/protos v0.1.2/go.mod h1:pYqpiLUwBdosUGozwwVnuzmduQs+jXY/MfNSA2j10o0=
 github.com/Guitarkeepsme/protos v0.0.3 h1:t438fC8y7bv9HI0mlR2d6+SSUvugnuJSBJpfdV2zANw=
 github.com/Guitarkeepsme/protos v0.0.3/go.mod h1:C4q23u5cWtaza9ujvJsPUnn/QpESU8FI65nHgerWfw8=
 github.com/brianvoe/gofakeit/v6 v6.26.4 h1:+7JwTAXxw46Hdo1hA/F92Wi7x8vTwbjdFtBWYdm8eII=

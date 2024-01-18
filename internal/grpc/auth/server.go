@@ -5,9 +5,7 @@ import (
 	"errors"
 	"sso/internal/services/auth"
 
-	"sso/internal/storage"
-
-	ssov1 "github.com/GolangLessons/protos/gen/go/sso"
+	ssov1 "github.com/Guitarkeepsme/protos/gen/go/sso"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -50,7 +48,7 @@ func (s *serverAPI) Login(ctx context.Context,
 	token, err := s.auth.Login(ctx, req.GetEmail(), req.GetPassword(), int(req.GetAppId()))
 	if err != nil {
 		if errors.Is(err, auth.ErrInvalidCredentials) {
-			return nil, status.Error(codes.InvalidArgument, "invalid credentials")
+			return nil, status.Error(codes.InvalidArgument, "invalid email or password")
 		}
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -84,7 +82,7 @@ func (s *serverAPI) IsAdmin(ctx context.Context,
 
 	isAdmin, err := s.auth.IsAdmin(ctx, req.GetUserId())
 	if err != nil {
-		if errors.Is(err, storage.ErrUserNotFound) {
+		if errors.Is(err, auth.ErrUserNotFound) {
 			return nil, status.Error(codes.NotFound, "user not found")
 		}
 		return nil, status.Error(codes.Internal, "internal error")
