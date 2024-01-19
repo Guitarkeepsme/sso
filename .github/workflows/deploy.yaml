@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       HOST: root@45.91.203.54
       DEPLOY_DIRECTORY: /root/apps/grpc-auth
