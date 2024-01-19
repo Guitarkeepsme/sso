@@ -10,6 +10,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    container: debian:bullseye
     env:
       HOST: root@45.91.203.54
       DEPLOY_DIRECTORY: /root/apps/grpc-auth
